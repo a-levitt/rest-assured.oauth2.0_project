@@ -15,7 +15,7 @@ public class OAuth2Tests {
 
         String clientId = "692183103107-p0m7ent2hk7suguv4vq22hjcfhcr43pj.apps.googleusercontent.com";
 
-        // Use Selenium to get access code
+        // Use Selenium to get authorization code
         WebDriver driver = new ChromeDriver();
 
         driver.get("https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -31,12 +31,14 @@ public class OAuth2Tests {
         driver.findElement(By.cssSelector("input[type='password']")).sendKeys(getPassword());
         driver.findElement(By.xpath("(//button[@jsname=\"LgbsSe\"])[2]")).click();
         Thread.sleep(4000);
-        String codeUri = driver.getCurrentUrl();
+        String codeUrl = driver.getCurrentUrl();
+        String partialCode = codeUrl.split("code=")[1];
+        String authorizationCode = partialCode.split("&scope")[0];
 
         // 2. Get access token
         String accessTokenResponse =
         given()
-                .queryParam("code", "")
+                .queryParam("code", authorizationCode)
                 .queryParam("client_id", clientId)
                 .queryParam("client_secret", "erZOWM9g3UtwNRj340YYaK_W")
                 .queryParam("redirect_uri", "https://rahulshettyacademy.com/getCourse.php")
