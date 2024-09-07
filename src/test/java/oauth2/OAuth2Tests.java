@@ -7,8 +7,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.Arrays;*/
 
-import java.util.Arrays;
-
 import static io.restassured.RestAssured.*;
 import static payload.Secret.*;
 
@@ -17,7 +15,7 @@ public class OAuth2Tests {
 
         String clientId = "692183103107-p0m7ent2hk7suguv4vq22hjcfhcr43pj.apps.googleusercontent.com";
         String authorizationCode = getAuthorizationCode();
-        System.out.println("Authorization code: " + authorizationCode);
+        System.out.println("Authorization code: " + authorizationCode + "\n");
 
 /*        // Use Selenium to get authorization code [NOT AVAILABLE DUE TO GOOGLE SECURITY POLICIES]
         WebDriver driver = new ChromeDriver();
@@ -41,23 +39,24 @@ public class OAuth2Tests {
 
         // 2. Get access token
         String accessTokenResponse =
-         given()
+        given()
                 .urlEncodingEnabled(false)
                 .queryParams("code", authorizationCode)
-                .queryParams("client_id","692183103107-p0m7ent2hk7suguv4vq22hjcfhcr43pj.apps.googleusercontent.com")
+                .queryParams("client_id",clientId)
                 .queryParams("client_secret","erZOWM9g3UtwNRj340YYaK_W")
                 .queryParams("redirect_uri","https://rahulshettyacademy.com/getCourse.php")
                 .queryParams("grant_type","authorization_code")
-         .when().log().all()
+        .when()
+                 .log().all()
                 .post("https://www.googleapis.com/oauth2/v4/token")
-         .asString()
-         ;
-        System.out.println(accessTokenResponse);
+        .asString()
+        ;
+        System.out.println("AT-Response:" + accessTokenResponse + "\n");
 
         JsonPath jp = new JsonPath(accessTokenResponse);
         String accessToken = jp.getString("access_token");
 
-        System.out.println("Access token:" + accessToken);
+        System.out.println("Access token:" + accessToken + "\n");
 
         // 1. Actual request
         String response =
@@ -68,6 +67,6 @@ public class OAuth2Tests {
         .asString()
         ;
 
-        System.out.println(response);
+        System.out.println("Response:" + response + "\n");
     }
 }
