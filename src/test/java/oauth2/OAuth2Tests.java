@@ -38,6 +38,7 @@ public class OAuth2Tests {
         // 2. Get access token
         String accessTokenResponse =
         given()
+                .urlEncodingEnabled(false) // set rest assured to ignore special characters (for authorizationCode value)
                 .queryParam("code", authorizationCode)
                 .queryParam("client_id", clientId)
                 .queryParam("client_secret", "erZOWM9g3UtwNRj340YYaK_W")
