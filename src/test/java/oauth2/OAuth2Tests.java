@@ -1,29 +1,37 @@
 package oauth2;
 
 import io.restassured.path.json.JsonPath;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.Arrays;
 
 import static io.restassured.RestAssured.*;
+import static payload.Secret.*;
 
 public class OAuth2Tests {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         String clientId = "692183103107-p0m7ent2hk7suguv4vq22hjcfhcr43pj.apps.googleusercontent.com";
 
-        // 3. Get access code
-        String accessCodeResponse =
-        given()
-                .queryParam("scope", "https://www.googleapis.com/auth/userinfo.email")
-                .queryParam("auth_url", "https://accounts.google.com/o/oauth2/v2/auth")
-                .queryParam("client_id", clientId)
-                .queryParam("response_type", "code")
-                .queryParam("redirect_uri", "https://rahulshettyacademy.com/getCourse.php")
-        .when()
-                .get("https://accounts.google.com/o/oauth2/v2/auth")
-        .asString()
-        ;
+        // Use Selenium to get access code
+        WebDriver driver = new ChromeDriver();
 
+        driver.get("https://accounts.google.com/o/oauth2/v2/auth?" +
+                "scope=https://www.googleapis.com/auth/userinfo.email&" +
+                "auth_url=https://accounts.google.com/o/oauth2/v2/auth&" +
+                "client_id=" + clientId + "&" +
+                "response_type=code&" +
+                "redirect_uri=https://rahulshettyacademy.com/getCourse.php");
+
+        driver.findElement(By.id("identifierId")).sendKeys(getEmail());
+        driver.findElement(By.xpath("(//button[@jsname=\"LgbsSe\"])[2]")).click();
+        Thread.sleep(3000);
+        driver.findElement(By.cssSelector("input[type='password']")).sendKeys(getPassword());
+        driver.findElement(By.xpath("(//button[@jsname=\"LgbsSe\"])[2]")).click();
+        Thread.sleep(4000);
+        String codeUri = driver.getCurrentUrl();
 
         // 2. Get access token
         String accessTokenResponse =
